@@ -97,8 +97,10 @@ VALUES
     3
 );
 
+-- display all vendors--subscription plan name and price
 SELECT
     v.business_name,
+    v.contact_person,
     s.subscription_name,
     s.price
 FROM Vendor_Profile AS v 
@@ -118,9 +120,12 @@ CREATE TABLE users (
     email VARCHAR(100) UNIQUE NOT NULL,
     password VARCHAR(255) NOT NULL
 );
-
+INSERT INTO users (id, is_active, created_at, updated_at, username, email, password) VALUES
+(1, TRUE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'rocky', 'rocky@gmail.com', 'hashed_pass_123'),
+(2, TRUE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'oldcustomer', 'oldcustomer@gmail.com', 'hashed_pass_456'),
+(3, TRUE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'tanaka', 'tanaka@gmail.com', 'hashed_pass_789');
 -- USER PROFILE 
-
+select * from users;
 CREATE TABLE user_profile (
     id INTEGER PRIMARY KEY,
     is_active BOOLEAN,
@@ -135,6 +140,14 @@ CREATE TABLE user_profile (
         FOREIGN KEY (user_id) 
         REFERENCES users(id)
 );
+-- SELECT * from user_profile;
+
+DELETE FROM users where email='oldcustomer@gmail.com';
+INSERT INTO user_profile (id, is_active, created_at, updated_at, user_id, first_name, last_name, phone_no, business_address) VALUES
+(101, TRUE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1, 'Alif Hossain', 'Rocky', '+819012345678', 'Osaka, Japan'),
+(102, TRUE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 2, 'John', 'Doe', '+818098765432', 'Tokyo, Japan'),
+(103, TRUE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 3, 'Tanaka', 'Ken', '+817011223344', 'Kyoto, Japan');
+DELETE FROM user_profile WHERE user_id=(select id FROM users WHERE email='oldcustomer@gmail.com');
 
 CREATE TABLE Category(
     id INTEGER PRIMARY KEY,
@@ -144,7 +157,17 @@ CREATE TABLE Category(
     title VARCHAR(100),
     description VARCHAR(255)
 );
+-- DELETE from Category where id=1;
+INSERT INTO Category(id,is_active,created_at,updated_at,title,description)
+VALUES
+(1, TRUE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'Electronics', 'Electronic devices and gadgets'),
+(2, TRUE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'Clothing', 'Men and Women apparel'),
+(3, TRUE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'Home Appliance', 'Home and kitchen appliances');
+SELECT * FROM Category;
+SELECT * FROM Product;
 
+ALTER TABLE Product
+ADD COLUMN stock INT DEFAULT 0;
 -- product
 CREATE TABLE Product(
     id INTEGER PRIMARY KEY,
@@ -158,6 +181,40 @@ CREATE TABLE Product(
         FOREIGN KEY (category_id)
         REFERENCES  Category(id)
 );
+-- DELETE from Product Where id IN(2,3,4,5);
+SELECT * from Product;
+INSERT INTO Product(
+    id, 
+    is_active, 
+    created_at, 
+    updated_at, 
+    title, 
+    price, 
+    category_id
+)VALUES
+-- Electronics
+(1, TRUE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'Laptop', 75000.00,1),
+(2, TRUE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'Smartphone', 45000.00, 1),
+(3, TRUE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'Wireless Earbuds', 5500.00, 1),
+(4, TRUE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'Cotton Formal Shirt', 2500.00, 2),
+(5, TRUE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'Microwave Oven', 18000.00, 3);
+-- Electronic-(1,2=id) 
+-- Clothing (3)
+-- Home Appliance (4)
+-- to get value using Sub-query method  
+select title,price,stock from Product WHERE category_id=(select id from Category where title='Electronics');
+
+UPDATE Product 
+SET stock=15
+WHERE title='Laptop';
+SELECT 
+    c.title AS category_title,
+    p.title AS product_title,
+    c.description,
+    p.price
+FROM Category AS c
+JOIN Product AS p 
+    ON c.id = p.category_id;
 
 -- order
 
