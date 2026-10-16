@@ -1,10 +1,13 @@
-  CREATE TABLE subscription_plan (
+-- Creating subscription plan 
+CREATE TABLE subscription_plan (
     id INTEGER PRIMARY KEY,
     subscription_name VARCHAR(50),
     price DECIMAL(10, 2),
     duration INTEGER,
     feature VARCHAR(100)
 );
+
+-- insertion of values into subscription plan 
 INSERT INTO subscription_plan(id,subscription_name,price,duration,feature)
 VALUES
 (1, 'Basic Plan', 9.99, 30, 'Access to basic features, Email support'),
@@ -12,7 +15,9 @@ VALUES
 (3, 'Premium Plan', 49.99, 90, 'All features unlocked, 24/7 dedicated support, Free updates'),
 (4, 'Enterprise Plan', 99.99, 365, 'Custom solutions, Dedicated account manager, Unlimited access');
 
-select * from subscription_plan;
+-- select * from subscription_plan;
+
+-- Creating vendor profile
 
 CREATE TABLE Vendor_Profile (
     id INTEGER PRIMARY KEY,
@@ -29,9 +34,14 @@ CREATE TABLE Vendor_Profile (
         FOREIGN KEY (subscription_plan) 
         REFERENCES subscription_plan(id)
 );
+
+-- deleted one time for making mistake-----------
 -- DELETE FROM Vendor_Profile;
 -- DROP TABLE Vendor_Profile;
-SELECT * FROM Vendor_Profile;
+
+-- SELECT * FROM Vendor_Profile;
+
+-- insertion Vendor_Profile 
 
 INSERT INTO Vendor_Profile (
     id,
@@ -95,7 +105,8 @@ VALUES
     3
 );
 
--- display all vendors--subscription plan name and price
+-- display all vendors--subscription plan name and price-
+-- joining the values to get the the inside values using join or like inner join method
 SELECT
     v.business_name,
     v.contact_person,
@@ -105,10 +116,9 @@ FROM Vendor_Profile AS v
 JOIN subscription_plan AS s 
 ON v.subscription_plan=s.id
 
-SELECT * FROM Vendor_Profile;
+-- SELECT * FROM Vendor_Profile;
 
--- category  
--- Users 
+-- creating users 
 CREATE TABLE users (
     id INTEGER PRIMARY KEY,
     is_active BOOLEAN,
@@ -118,6 +128,8 @@ CREATE TABLE users (
     email VARCHAR(100) UNIQUE NOT NULL,
     password VARCHAR(255) NOT NULL
 );
+-- insertion users information
+
 INSERT INTO users (id, is_active, created_at, updated_at, username, email, password) VALUES
 (1, TRUE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'rocky', 'rocky@gmail.com', 'hashed_pass_123'),
 (2, TRUE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'oldcustomer', 'oldcustomer@gmail.com', 'hashed_pass_456'),
@@ -125,10 +137,13 @@ INSERT INTO users (id, is_active, created_at, updated_at, username, email, passw
 -- USER PROFILE 
 
 
--- new added  
+-- new added-after above addition  
 INSERT INTO users (id, is_active, created_at, updated_at, username, email, password) 
 VALUES (5, TRUE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'karim', 'karim@gmail.com', 'pass123');
-select * from users;
+-- select * from users;
+
+
+-- creating user profile
 CREATE TABLE user_profile (
     id INTEGER PRIMARY KEY,
     is_active BOOLEAN,
@@ -144,6 +159,8 @@ CREATE TABLE user_profile (
         REFERENCES users(id)
 );
 SELECT * from user_profile;
+
+
 -- delete user from this email 
 DELETE FROM users where email='oldcustomer@gmail.com';
 
@@ -153,12 +170,18 @@ INSERT INTO user_profile (id, is_active, created_at, updated_at, user_id, first_
 (101, TRUE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1, 'Alif Hossain', 'Rocky', '+819012345678', 'Osaka, Japan'),
 (102, TRUE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 2, 'John', 'Doe', '+818098765432', 'Tokyo, Japan'),
 (103, TRUE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 3, 'Tanaka', 'Ken', '+817011223344', 'Kyoto, Japan');
+
+
+
+-- using the sub query method to get the id so that deletion can be easier,there in user profile there were no email address so that i am trying to take the user id so that the email address can be accessed and find easily
 DELETE FROM user_profile WHERE user_id=(select id FROM users WHERE email='oldcustomer@gmail.com');
 
-
+-- adding again additional user profile 
 INSERT INTO user_profile (id, is_active, created_at, updated_at, user_id, first_name, last_name, phone_no, business_address) 
 VALUES (50, TRUE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 5, 'Karim', 'Uddin', '+81900000000', 'Tokyo, Japan');
 
+
+-- adding category table 
 CREATE TABLE Category(
     id INTEGER PRIMARY KEY,
     is_active BOOLEAN,
@@ -167,15 +190,19 @@ CREATE TABLE Category(
     title VARCHAR(100),
     description VARCHAR(255)
 );
+-- deleting by user id -----
 -- DELETE from Category where id=1;
+
+-- insertion of category info 
 INSERT INTO Category(id,is_active,created_at,updated_at,title,description)
 VALUES
 (1, TRUE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'Electronics', 'Electronic devices and gadgets'),
 (2, TRUE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'Clothing', 'Men and Women apparel'),
 (3, TRUE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'Home Appliance', 'Home and kitchen appliances');
-SELECT * FROM Category;
-SELECT * FROM Product;
+-- SELECT * FROM Category;
+-- SELECT * FROM Product;
 
+-- at first i mistakenly didnt add the stock column after the alter method i created another column with the default value 0
 ALTER TABLE Product
 ADD COLUMN stock INT DEFAULT 0;
 ALTER TABLE 
@@ -192,8 +219,10 @@ CREATE TABLE Product(
         FOREIGN KEY (category_id)
         REFERENCES  Category(id)
 );
+
+-- when wanted to delete multiple id at that point using in i can select multiple ----
 -- DELETE from Product Where id IN(2,3,4,5);
-SELECT * from Product;
+-- SELECT * from Product;
 INSERT INTO Product(
     id, 
     is_active, 
@@ -203,13 +232,13 @@ INSERT INTO Product(
     price, 
     category_id
 )VALUES
--- Electronics
+-- 
+-- Electronic-(1,2=id) 
 (1, TRUE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'Laptop', 75000.00,1),
 (2, TRUE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'Smartphone', 45000.00, 1),
 (3, TRUE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'Wireless Earbuds', 5500.00, 1),
 (4, TRUE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'Cotton Formal Shirt', 2500.00, 2),
 (5, TRUE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'Microwave Oven', 18000.00, 3);
--- Electronic-(1,2=id) 
 -- Clothing (3)
 -- Home Appliance (4)
 
@@ -229,7 +258,7 @@ JOIN Product AS p
     ON c.id = p.category_id;
 
 -- order
-
+-- as order have another property so that why i make using " " so that no confliction 
 CREATE TABLE "Order" (
     id INTEGER PRIMARY KEY,
     is_active BOOLEAN,
@@ -277,6 +306,10 @@ VALUES
 (1004, 2, 1, 45000.00);
 
 
+
+-- This query retrieves a complete itemized list of all orders placed by the customer 
+--   "Karim Uddin", combining order details, product names, quantities, unit prices, 
+--   calculated item totals, and order status by joining five related tables.
 select 
     o.id AS order_id,
     up.first_name,
@@ -291,11 +324,13 @@ from "Order" o
 JOIN users u ON o.ordered_by=u.id
 JOIN user_profile up ON u.id=up.user_id
 JOIN order_items oi ON oi.order_id=o.id
-JOIN Product pr ON o.ordered_by=pr.id
+JOIN Product pr ON oi.product_id=pr.id
 WHERE up.first_name='Karim' AND up.last_name='Uddin';
 
 
 -- top 5 selling  
+
+-- For aggregation methods like SUM, we use GROUP BY and ORDER BY. With GROUP BY, we group values based on the JOIN (e.x: similar products) and accumulate them into a single group. For example: User 1 buys 1 Laptop, User 2 buys 1 Car, and User 3 buys 1 Laptop. In this case, the 'Laptop' entries are grouped together and their quantities are summed up as 2 (or 3, depending on the data). The GROUP BY clause identifies similar products and accumulates their total quantities for analysis
 
 select 
     pr.id AS product_id,
@@ -305,10 +340,14 @@ from order_items oi
 JOIN Product pr 
 ON oi.product_id=pr.id 
 GROUP BY pr.id,pr.title
-ORDER BY total_quantity_sold DESC
-LIMIT 5;
+ORDER BY total_quantity_sold DESC--SORTING: Ranks results from highest sales to lowest sales
+LIMIT 5;--limiting 5
 
 -- payment 
+-- ON DELETE CASCADE ensures:
+-- 1. Automatic Cleanup: If a record in the parent table ("Order" or "users") is deleted, 
+--    all associated payment records in the child table ("Payment") are automatically deleted.
+-- 3. Avoids Foreign Key Constraint Errors: Allows seamless deletion of parent records, without raising foreign key violation errors.
 CREATE TABLE Payment(
     payment_id INTEGER PRIMARY KEY,
     order_id INTEGER,
@@ -343,15 +382,19 @@ INSERT INTO Payment (
 (502, 1002, 1, TRUE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '2026-10-01', 'PayPal', 75000.00, 'Paid'),
 (503, 1004, 3, TRUE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '2026-10-14', 'Cash on Delivery', 18000.00, 'Pending');
 
+-- as i had already inserted as id 1001,1002,1003 so that why instead of 1 i used 1001,added extra the username also
 select 
-    pr.amount as payment_amount,
+    u.username as username,
     pr.payment_method as payment_method,
+    pr.amount as payment_amount,
     pr.status as payment_status
 from "Order" o 
 join payment pr ON o.id=pr.order_id
-WHERE id=1001
+join users u ON o.ordered_by=u.id
+WHERE o.id=1001
 
--- WHO BOUGHT MORE
+
+-- WHO BOUGHT MORE--future to apply more
 -- SELECT
 --     u.id AS user_id,
 --     u.username AS user_name,
