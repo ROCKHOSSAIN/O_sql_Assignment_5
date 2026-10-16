@@ -143,7 +143,7 @@ VALUES (5, TRUE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'karim', 'karim@gmail.com
 -- select * from users;
 
 
--- creating user profile
+-- creating user profile for individual
 CREATE TABLE user_profile (
     id INTEGER PRIMARY KEY,
     is_active BOOLEAN,
@@ -245,9 +245,12 @@ INSERT INTO Product(
 -- to get value using Sub-query method  
 select title,price,stock from Product WHERE category_id=(select id from Category where title='Electronics');
 
+-- updating the stock 
 UPDATE Product 
 SET stock=15
 WHERE title='Laptop';
+
+-- specific product showing 
 SELECT 
     c.title AS category_title,
     p.title AS product_title,
@@ -279,10 +282,10 @@ VALUES
 (1001, TRUE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 5, '2026-06-01', 12500.00, 'Processing'),
 (1002, TRUE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 3, '2026-10-01', 75000.00, 'Delivered'),
 (1004, TRUE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1, '2026-10-14', 18000.00, 'Pending');
-
 -- add another value
 
 
+-- for single order list items
 CREATE TABLE order_items (
     order_id INTEGER,
     product_id INTEGER,
